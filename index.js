@@ -3,7 +3,7 @@ const path = require("path");
 const exphbs = require("express-handlebars");
 const { engine } = require("express-handlebars");
 const { logger } = require("./middleware/logger");
-const members = require("./Members");
+const { members } = require("./Members");
 
 const app = express();
 
@@ -27,7 +27,7 @@ app.use(express.urlencoded({ extended: false }));
 app.get("/", (req, res) => {
   res.render("index", {
     title: "Member App",
-    members,
+    members: members,
   });
 });
 
