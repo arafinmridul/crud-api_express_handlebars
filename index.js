@@ -1,7 +1,9 @@
 const express = require("express");
 const path = require("path");
 const exphbs = require("express-handlebars");
+const { engine } = require("express-handlebars");
 const { logger } = require("./middleware/logger");
+const members = require("./Members");
 
 const app = express();
 
@@ -9,21 +11,32 @@ const app = express();
 // app.use(logger);
 
 // handlebars middleware
-app.engine("handlebars", exphbs({ defaultLayout: "main" }));
+app.engine("handlebars", engine());
 app.set("view engine", "handlebars");
+
+// use method is used to include middleware
 
 // body parser middleware
 app.use(express.json());
 // handle form submissions
 app.use(express.urlencoded({ extended: false }));
 
-// Members API Routes
-app.use("/api/members", require("./routes/api/members"));
+// view engine and static folder, one or the other is needed
+
+// Homepage Route
+app.get("/", (req, res) => {
+  res.render("index", {
+    title: "Member App",
+    members,
+  });
+});
 
 // Set static folder
-// use method is used to include middleware
 // static is a built in middleware
 app.use(express.static(path.join(__dirname, "public")));
+
+// Members API Routes
+app.use("/api/members", require("./routes/api/members"));
 
 // app.get("/", (req, res) => {
 // res.sendFile(path.join(__dirname, "public", "index.html"));
